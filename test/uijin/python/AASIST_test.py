@@ -35,7 +35,7 @@ print(f"device : {device}")
 
 TIME = strftime("%y%m%d_%H%M%S", localtime())
 DBDIR = "/home/aicontest/DF/data/audio"
-DBNAME = "all_train"
+DBNAME = "all_more_train"
 TNAME = "test"
 SUBMIT = "/home/aicontest/DF/result/uijin"
 SAVE = "/home/aicontest/DF/parameter/uijin"
@@ -59,18 +59,62 @@ def get_argument():
     # inference
     parser.add_argument("-val", "--validation", action="store_true", help="split images as validation set")
     parser.add_argument("-es", "--early_stop", action="store_true", help="enable early stopping when validation enabled")
-    parser.add_argument("-esp", "--early_stop_patient", type=int, default=10 ,help="enable early stopping when validation enabled")
+    parser.add_argument("-esp", "--early_stop_patient", type=int, default=5 ,help="enable early stopping when validation enabled")
     parser.add_argument("-vs", "--validation_size", type=int, default=0.2, help="validation percent")
     
     #hyperparameter
     parser.add_argument("--config", dest="config", type=str, help="configuration file", required=True)
     parser.add_argument("-sd", "--seed", type=int, default=42, help="fixed seed number")
-    parser.add_argument("-nep", "--n_epoch", type=int, default=50, help="number of epochs (maximum when early stopping enabled)")
+    parser.add_argument("-nep", "--n_epoch", type=int, default=20, help="number of epochs (maximum when early stopping enabled)")
     parser.add_argument("-b", "--batch_size", type=int, default=32, help="size of batch")
     parser.add_argument("-lr", "--learning_rate", type=float, default=0.0001, help="learning_rate")
     parser.add_argument("-pf", "--posfix", type=str, default="", help="postfix for checkpt")
-    parser.add_argument("-sf", "--sample_frequency", type=int, default=32000, help="Resample the waveform using sample rate")
-    parser.add_argument("-svt", "--sound_vector_threshold", type=int, default=64600, help="fixed sound vector size")
+    parser.add_argument("-sf", "--sample_frequency", type=int, default=16000, help="Resample the waveform using sample rate")
+    parser.add_argument("-svt", "--sound_vector_threshold", type=int, default=80000, help="fixed sound vector size")
+
+
+    parser.add_argument('--algo', type=int, default=4, 
+                    help='Rawboost algos discriptions. 0: No augmentation 1: LnL_convolutive_noise, 2: ISD_additive_noise, 3: SSI_additive_noise, 4: series algo (1+2+3), \
+                          5: series algo (1+2), 6: series algo (1+3), 7: series algo(2+3), 8: parallel algo(1,2) .[default=0]')
+
+    # LnL_convolutive_noise parameters 
+    parser.add_argument('--nBands', type=int, default=5, 
+                    help='number of notch filters.The higher the number of bands, the more aggresive the distortions is.[default=5]')
+    parser.add_argument('--minF', type=int, default=20, 
+                    help='minimum centre frequency [Hz] of notch filter.[default=20] ')
+    parser.add_argument('--maxF', type=int, default=8000, 
+                    help='maximum centre frequency [Hz] (<sr/2)  of notch filter.[default=8000]')
+    parser.add_argument('--minBW', type=int, default=100, 
+                    help='minimum width [Hz] of filter.[default=100] ')
+    parser.add_argument('--maxBW', type=int, default=1000, 
+                    help='maximum width [Hz] of filter.[default=1000] ')
+    parser.add_argument('--minCoeff', type=int, default=10, 
+                    help='minimum filter coefficients. More the filter coefficients more ideal the filter slope.[default=10]')
+    parser.add_argument('--maxCoeff', type=int, default=100, 
+                    help='maximum filter coefficients. More the filter coefficients more ideal the filter slope.[default=100]')
+    parser.add_argument('--minG', type=int, default=0, 
+                    help='minimum gain factor of linear component.[default=0]')
+    parser.add_argument('--maxG', type=int, default=0, 
+                    help='maximum gain factor of linear component.[default=0]')
+    parser.add_argument('--minBiasLinNonLin', type=int, default=5, 
+                    help=' minimum gain difference between linear and non-linear components.[default=5]')
+    parser.add_argument('--maxBiasLinNonLin', type=int, default=20, 
+                    help=' maximum gain difference between linear and non-linear components.[default=20]')
+    parser.add_argument('--N_f', type=int, default=5, 
+                    help='order of the (non-)linearity where N_f=1 refers only to linear components.[default=5]')
+
+    # ISD_additive_noise parameters
+    parser.add_argument('--P', type=int, default=10, 
+                    help='Maximum number of uniformly distributed samples in [%].[defaul=10]')
+    parser.add_argument('--g_sd', type=int, default=2, 
+                    help='gain parameters > 0. [default=2]')
+
+    # SSI_additive_noise parameters
+    parser.add_argument('--SNRmin', type=int, default=10, 
+                    help='Minimum SNR value for coloured additive noise.[defaul=10]')
+    parser.add_argument('--SNRmax', type=int, default=40, 
+                    help='Maximum SNR value for coloured additive noise.[defaul=40]')
+    
     return parser.parse_args()
 
 args = get_argument()
@@ -102,6 +146,9 @@ print("== seed 고정 완료 ==")
 ########################################################################
 
 df = pd.read_csv(args.db_dir + '/' + args.db_name + '.csv')
+df = df.sample(frac=1).reset_index(drop=True).iloc[:50000]
+print(df.head())
+print(f"데이터 길이 : {len(df)}")
 print("== 데이터 받기 완료 ==")
 
 ## validation 처리
@@ -119,51 +166,45 @@ print("== validation 처리 완료 ==")
 
 ## vector 길이 맞추기
 def pad_or_truncate(features, device, fixed_length=args.sound_vector_threshold, min_second_dim=3):
-    if features.shape[0] > fixed_length:
+    #print(f"니냐? {features.shape[0]}")
+    if features.shape[0] >= fixed_length:
+        # Truncate the tensor to the fixed length
         features = features[:fixed_length]
     else:
-        padding = torch.zeros((fixed_length - features.shape[0])).to(device)
-        features = torch.cat((features, padding), dim=0)
+        # Repeat the tensor to the fixed length
+        num_repeats = (fixed_length // features.shape[0]) + 1
+        padded_features = torch.tensor([])
+
+        for _ in range(num_repeats):
+            padded_features = torch.cat((padded_features, features), dim=0)
+
+        #print(f"누가 범인인가 {padded_features.shape[0]}")
+        features = padded_features[:fixed_length]
+
     
     return features
     
 def front_end(df, train_mode=True):
     features = []
     labels = []
-    for _, row in tqdm(df.iterrows()):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         # 이부분에 frontend 삽입
         waveform, sample_rate = torchaudio.load(args.db_dir + '/' + row['path'])
         
-        waveform = pad_or_truncate(waveform.squeeze(0).to(device), device)
-        features.append(waveform.cpu())
-        # # resampling
-        # resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=args.sample_frequency)
-        # waveform = resampler(waveform)
+        resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=args.sample_frequency)
+        waveform = resampler(waveform)
 
-        # # 단일 채널 확인
-        # if waveform.shape[0] > 1:
-        #     waveform = torch.mean(waveform, dim=0, keepdim=True)
-
-        # # 스케줄링
-        # waveform = waveform / waveform.abs().max()
-
-        # # wav2vec 넣기
-        # with torch.no_grad(): # 이건 pre-trained 되어 있어서 학습 안하나 봄, 앙상블은 간단하게 여기 Model 하나 더 추가
-        #     output = front_model(waveform.to(device))
-        #     #print(output[0].squeeze(0).shape)
-        #     _output = pad_or_truncate(torch.mean(output[0], dim=2).squeeze(0), device) # 이거 flatten 인데 임시적인 방안
-        #     #print(_output)
-        #     features.append(_output)
+        waveform = pad_or_truncate(waveform.squeeze(0), device)
+        #print(waveform.shape[0]) 
+        features.append(waveform)
 
         if train_mode:
-            #label = row['label']
             label_vector = np.zeros(2, dtype=float)
-            #label_vector[0 if label == 'fake' else 1] = 1
             label_vector[1] = row['real']
             label_vector[0] = row['fake']
             labels.append(label_vector)
         # 임시 과정 보기 위함
-        # if len(features) >= 10:
+        # if len(features) >= 100:
         #      break
 
     if train_mode:
@@ -180,10 +221,22 @@ if args.validation:
 ########################### Dataset ####################################
 ########################################################################
 
+def get_module(directory, module_file , module_name):
+    sys.path.append(directory)
+    module = import_module(module_file)
+    function = getattr(module, module_name)
+
+    return function
+
 class CustomDataset(Dataset):
-    def __init__(self, data, label):
+    def __init__(self, data, label, args, algo=4, noise_rate=0.1, noise_probability=0.1):
         self.data = data
         self.label = label
+        self.args = args
+        self.algo = algo 
+        self.noise_rate = noise_rate
+        self.noise_probability = noise_probability
+        self.process_Rawboost_feature = get_module('/home/aicontest/DF/modules','augmentation', 'process_Rawboost_feature')
 
     def __len__(self):
         return len(self.data)
@@ -192,10 +245,18 @@ class CustomDataset(Dataset):
         # 이쪽에 전처리, augmentation
 
         if self.label is not None:
-            return self.data[index], self.label[index]
+
+            # # 특정 비율의 데이터에만 노이즈 추가
+            # if np.random.rand() < self.noise_probability:
+            #     wn = np.random.randn(len(data_item))
+            #     data_item = data_item + self.noise_rate * wn
+
+            data_item = self.process_Rawboost_feature(self.data[index], self.args.sample_frequency, self.args, self.algo)
+
+            return data_item, self.label[index]
         return self.data[index]
 
-train_dataset = CustomDataset(train_data, train_labels)
+train_dataset = CustomDataset(train_data, train_labels, args, args.algo)
 train_loader = DataLoader(
     train_dataset,
     batch_size=args.batch_size,
@@ -203,7 +264,7 @@ train_loader = DataLoader(
 )
 
 if args.validation:
-    val_dataset = CustomDataset(val_data, val_labels)
+    val_dataset = CustomDataset(val_data, val_labels, args, args.algo)
     val_loader = DataLoader(
         val_dataset,
         batch_size=args.batch_size,
@@ -220,6 +281,8 @@ print("== pre-processing 완료 ==")
 
 def train(model, optimizer, train_loader, device, val_loader=False):
     model.to(device)
+    #weight = torch.FloatTensor([0.1, 0.9]).to(device)
+    #criterion = nn.CrossEntropyLoss(weight=weight).to(device)
     criterion = nn.BCELoss().to(device)
     
     best_val_score = 0
@@ -229,13 +292,14 @@ def train(model, optimizer, train_loader, device, val_loader=False):
     for epoch in range(1, args.n_epoch+1):
         model.train()
         train_loss = []
-        for features, labels in tqdm(iter(train_loader)):
+        for features, labels in tqdm(iter(train_loader), total=len(train_loader)):
             features = features.float().to(device)
             labels = labels.float().to(device)
             
             optimizer.zero_grad()
             
             output = model(features)
+            #output = output[1]
             output = torch.sigmoid(output[1])
             #print(f'Train output: {output}')
             loss = criterion(output, labels)
@@ -347,7 +411,7 @@ else:
 # infer_model.eval()
 # debug_model_output(infer_model, val_loader, device)
 
-#torch.save(infer_model.state_dict(), args.save_model + "/result_" + str(args.time) + ".pt")
+torch.save(infer_model.state_dict(), args.save_model + "/result_" + str(args.time) + ".pt")
 print("== back_end 완료 ==")
 
 ########################################################################
@@ -356,7 +420,7 @@ print("== back_end 완료 ==")
 
 test = pd.read_csv(args.db_dir + '/' + args.test_name + '.csv')
 test_data = front_end(test, False)
-test_dataset = CustomDataset(test_data, None)
+test_dataset = CustomDataset(test_data, None, args)
 test_loader = DataLoader(
     test_dataset,
     batch_size=args.batch_size,
@@ -368,10 +432,11 @@ def inference(model, test_loader, device):
     model.train()
     predictions = []
     with torch.no_grad():
-        for features in tqdm(iter(test_loader)):
+        for features in tqdm(iter(test_loader), total=len(test_loader)):
             features = features.float().to(device)
             
             probs = model(features)
+            #probs = probs[1]
             probs = torch.sigmoid(probs[1])
 
             probs = probs.cpu().detach().numpy()
@@ -388,7 +453,22 @@ print("== inference 완료 ==")
 submit = pd.read_csv(args.db_dir + '/' + 'sample_submission.csv')
 submit.iloc[:, 1:] = preds
 #submit.iloc[:TESTING, 1:] = preds
-submit.head()
+print(submit.head())
 
+########################################################################
+######################## noise detection ###############################
+########################################################################
+
+non_speech_list = []
+
+with open("../non_speech.txt", "r") as f:
+    lines = f.readlines()
+    for line in lines:
+        file_path = line.split(' ')[0]
+        file_name = file_path.split('/')[-1][:-4]
+        non_speech_list.append(file_name)
+        
+
+submit.loc[submit['id'].isin(non_speech_list), ['fake', 'real']] = 0
 submit.to_csv(args.submit + "/submit_" + str(args.time) + ".csv" , index=False)
 print("== submit 완료 ==")

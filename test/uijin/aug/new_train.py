@@ -7,7 +7,7 @@ import math
 
 
 df = pd.read_csv("/home/aicontest/DF/data/audio/train.csv")
-df_2 = pd.read_csv("/home/aicontest/DF/data/audio/mix_train.csv")
+df_2 = pd.read_csv("/home/aicontest/DF/data/audio/more_mix_train.csv")
 
 print(df.head())
 id = pd.concat([df["id"], df_2["id"]], ignore_index=True)
@@ -22,4 +22,4 @@ new_df = pd.DataFrame({
     "fake": fake
 })
 
-new_df.to_csv("/home/aicontest/DF/data/audio/all_train.csv",index=False)
+new_df.to_csv("/home/aicontest/DF/data/audio/all_more_train.csv",index=False)

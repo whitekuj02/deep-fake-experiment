@@ -17,9 +17,9 @@ import noisereduce as nr
 # audioDenoiser.deNoise(outputFile="input_denoised.wav")
 # #audioDenoiser.generateNoiseProfile(noiseFile="input_noise_profile.wav")
 
-# audio_path = "/home/aicontest/DF/data/audio/test/TEST_00001.ogg"
+audio_path = "/home/aicontest/DF/data/audio/test/TEST_49941.ogg"
 
-# audio, sr = librosa.load(audio_path, sr=8000)
+audio, sr = librosa.load(audio_path, sr=32000)
 
 # # normalized_audio = librosa.util.normalize(audio)
 
@@ -27,10 +27,10 @@ import noisereduce as nr
 # # plt.plot(time, audio)
 # # plt.savefig("./result.png")
 
-# # clean_audio = nr.reduce_noise(y=audio, sr=sr)
+clean_audio = nr.reduce_noise(y=audio, sr=sr)
 
 # # 오디오 파일 저장
-# sf.write('./result.wav', audio, 8000)
+sf.write('./result.wav', clean_audio, 32000)
 
 # from speechbrain.inference.separation import SepformerSeparation as separator
 

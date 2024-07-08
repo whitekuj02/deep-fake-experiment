@@ -31,9 +31,9 @@ path = []
 real = []
 fake = []
 
-for (_, row_1), (_, row_2) in zip(tqdm(train_1.iterrows()), tqdm(train_2.iterrows())):
-    
 
+for (_, row_1), (_, row_2) in tqdm(zip(train_1.iterrows(), train_2.iterrows()), total=len(train_1)):
+    
     sound1 = AudioSegment.from_ogg(db_dir + '/' + row_1["path"])
     sound2 = AudioSegment.from_ogg(db_dir + '/' + row_2["path"])
     

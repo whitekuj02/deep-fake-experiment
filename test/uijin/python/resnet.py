@@ -235,7 +235,7 @@ def train(model, optimizer, train_loader, device, val_loader=False):
             optimizer.zero_grad()
             
             output = model(features)
-            output = F.softmax(output, dim=1)
+            output = torch.sigmoid(output)
             #print(f'Train output: {output}')
             loss = criterion(output, labels)
             
@@ -285,7 +285,7 @@ def validation(model, criterion, val_loader, device):
             labels = labels.float().to(device)
             
             probs = model(features)
-            probs = F.softmax(probs, dim=1)
+            probs = torch.sigmoid(probs)
             #print(f'Validation probs: {probs}')
             
             loss = criterion(probs, labels)
@@ -394,7 +394,7 @@ def inference(model, test_loader, device):
             features = features.float().to(device)
             
             probs = model(features)
-            probs = F.softmax(probs, dim=1)
+            probs = torch.sigmoid(probs)
 
             probs = probs.cpu().detach().numpy()
             predictions += probs.tolist()
