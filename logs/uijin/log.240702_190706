@@ -1,110 +1,0 @@
-device : cuda
-== argment 처리 완료 ==
-== seed 고정 완료 ==
-== 데이터 받기 완료 ==
-== validation 처리 완료 ==
-0it [00:00, ?it/s]1it [00:01,  1.13s/it]2it [00:01,  1.80it/s]3it [00:01,  2.58it/s]4it [00:01,  3.52it/s]5it [00:01,  4.15it/s]6it [00:01,  4.65it/s]7it [00:02,  5.50it/s]9it [00:02,  6.91it/s]9it [00:02,  3.89it/s]
-== train front end 완료 ==
-0it [00:00, ?it/s]1it [00:00,  5.87it/s]2it [00:00,  6.62it/s]3it [00:00,  7.47it/s]4it [00:00,  6.47it/s]5it [00:00,  6.03it/s]6it [00:00,  5.97it/s]7it [00:01,  5.41it/s]9it [00:01,  7.15it/s]9it [00:01,  6.00it/s]
-== validation front end 완료 ==
-== pre-processing 완료 ==
-no. model params:297866
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  2.05it/s]100%|██████████| 1/1 [00:00<00:00,  2.05it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 150.22it/s]
-Epoch [1], Train Loss : [1.63839] Val Loss : [5.01252] Val AUC : [0.40000], patient: [0]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 41.54it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 155.47it/s]
-Epoch [2], Train Loss : [2.31152] Val Loss : [5.13087] Val AUC : [0.27000], patient: [0]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.33it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 148.30it/s]
-Epoch [3], Train Loss : [8.37275] Val Loss : [5.17914] Val AUC : [0.27000], patient: [1]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 36.07it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.80it/s]
-Epoch [4], Train Loss : [1.87180] Val Loss : [5.35849] Val AUC : [0.37000], patient: [2]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 25.61it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.28it/s]
-Epoch [5], Train Loss : [2.92581] Val Loss : [5.58618] Val AUC : [0.45000], patient: [3]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.08it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.71it/s]
-Epoch [6], Train Loss : [1.80659] Val Loss : [5.85316] Val AUC : [0.36000], patient: [0]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.20it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 154.35it/s]
-Epoch [7], Train Loss : [1.94642] Val Loss : [6.21041] Val AUC : [0.49000], patient: [1]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 36.61it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 148.79it/s]
-Epoch [8], Train Loss : [2.93182] Val Loss : [6.55113] Val AUC : [0.40000], patient: [0]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.13it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 150.53it/s]
-Epoch [9], Train Loss : [3.16401] Val Loss : [6.99417] Val AUC : [0.59000], patient: [1]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 33.01it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.91it/s]
-Epoch [10], Train Loss : [0.77303] Val Loss : [7.38396] Val AUC : [0.29000], patient: [0]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.27it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 66.36it/s]
-Epoch [11], Train Loss : [1.28455] Val Loss : [7.59439] Val AUC : [0.51000], patient: [1]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 42.55it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.97it/s]
-Epoch [12], Train Loss : [2.40934] Val Loss : [7.91502] Val AUC : [0.29000], patient: [2]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 28.49it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 151.04it/s]
-Epoch [13], Train Loss : [2.08447] Val Loss : [8.10175] Val AUC : [0.45000], patient: [3]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.63it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.80it/s]
-Epoch [14], Train Loss : [2.28447] Val Loss : [29.28325] Val AUC : [0.27000], patient: [4]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.55it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.49it/s]
-Epoch [15], Train Loss : [1.68715] Val Loss : [29.30032] Val AUC : [0.27000], patient: [5]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.83it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 153.19it/s]
-Epoch [16], Train Loss : [2.58587] Val Loss : [29.35360] Val AUC : [0.25000], patient: [6]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 42.84it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 151.63it/s]
-Epoch [17], Train Loss : [3.34304] Val Loss : [29.28088] Val AUC : [0.27000], patient: [7]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.74it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 152.06it/s]
-Epoch [18], Train Loss : [1.69310] Val Loss : [29.17615] Val AUC : [0.35000], patient: [8]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 43.00it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 150.82it/s]
-Epoch [19], Train Loss : [1.80045] Val Loss : [8.11433] Val AUC : [0.53000], patient: [9]
-== back_end 완료 ==
-0it [00:00, ?it/s]1it [00:00,  5.47it/s]3it [00:00, 10.45it/s]5it [00:00, 11.98it/s]7it [00:00, 13.90it/s]9it [00:00, 14.84it/s]9it [00:00, 12.39it/s]
-  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 82.40it/s]
-== inference 완료 ==
-Traceback (most recent call last):
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/indexing.py", line 2133, in _setitem_single_column
-    self.obj._mgr.column_setitem(
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/internals/managers.py", line 1335, in column_setitem
-    col_mgr.setitem_inplace(idx, value)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/internals/managers.py", line 2044, in setitem_inplace
-    super().setitem_inplace(indexer, value)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/internals/base.py", line 357, in setitem_inplace
-    value = np_can_hold_element(arr.dtype, value)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/dtypes/cast.py", line 1834, in np_can_hold_element
-    raise LossySetitemError
-pandas.errors.LossySetitemError
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/aicontest/DF/test/uijin/nohup/../python/test1.py", line 389, in <module>
-    submit.iloc[:, 1:] = preds
-    ~~~~~~~~~~~^^^^^^^
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/indexing.py", line 911, in __setitem__
-    iloc._setitem_with_indexer(indexer, value, self.name)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/indexing.py", line 1942, in _setitem_with_indexer
-    self._setitem_with_indexer_split_path(indexer, value, name)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/indexing.py", line 1982, in _setitem_with_indexer_split_path
-    self._setitem_with_indexer_2d_value(indexer, value)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/indexing.py", line 2057, in _setitem_with_indexer_2d_value
-    self._setitem_single_column(loc, value_col, pi)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/indexing.py", line 2160, in _setitem_single_column
-    self.obj.isetitem(loc, value)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/frame.py", line 4268, in isetitem
-    arraylike, refs = self._sanitize_column(value)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/frame.py", line 5266, in _sanitize_column
-    com.require_length_match(value, self.index)
-  File "/home/aicontest/anaconda3/envs/DF/lib/python3.11/site-packages/pandas/core/common.py", line 573, in require_length_match
-    raise ValueError(
-ValueError: Length of values (10) does not match length of index (50000)
